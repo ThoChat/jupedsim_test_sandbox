@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0" version="24.8.3">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1696" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2336" dy="808" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -102,10 +102,10 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="0ZtqP5NgUOmBBxxybwcA-17" value="itterate to the next agent" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
-          <mxGeometry x="150" y="810" width="120" height="40" as="geometry" />
+          <mxGeometry x="80" y="810" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="T-XpAsxmiewTtndsroM--2" value="Update stepping foot position: stepping foot heel pos = stepping foot heel pos +vect(stepping foot heel pos, next heel target)/Step Timer" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="-300" y="545" width="300" height="110" as="geometry" />
+          <mxGeometry x="-350" y="560" width="300" height="110" as="geometry" />
         </mxCell>
         <mxCell id="T-XpAsxmiewTtndsroM--3" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;jettySize=auto;orthogonalLoop=1;fontSize=11;endArrow=block;endFill=0;endSize=8;strokeWidth=1;shadow=0;labelBackgroundColor=none;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="0ZtqP5NgUOmBBxxybwcA-1" target="T-XpAsxmiewTtndsroM--2">
           <mxGeometry y="10" relative="1" as="geometry">

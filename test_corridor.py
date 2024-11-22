@@ -91,7 +91,7 @@ for agent_id in traj["id"].unique():
     # Position
     axes.plot(
         agent_data["x"],
-        agent_data["y"],  # ["head_pos_y"],
+        agent_data["y"],
         label=f"Head of Agent {agent_id}",
         color=color,
     )
@@ -99,7 +99,20 @@ for agent_id in traj["id"].unique():
     axes.plot(
         agent_data["head_pos_x"], agent_data["head_pos_y"], alpha=0.3, color=color
     )
-
+    # heel right position
+    axes.plot(
+        agent_data["heel_right_pos_x"],
+        agent_data["heel_right_pos_y"],
+        alpha=0.3,
+        color=color,
+    )
+    # heel left position
+    axes.plot(
+        agent_data["heel_left_pos_x"],
+        agent_data["heel_left_pos_y"],
+        alpha=0.3,
+        color=color,
+    )
 
 axes.set_xlabel("x/m")
 axes.set_ylabel("y/m")

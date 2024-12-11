@@ -2,29 +2,42 @@ import pathlib
 import matplotlib.pyplot as plt
 import jupedsim as jps
 import pedpy
+import numpy as np
 from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 
 ## Setup geometries
-area = Polygon([(0, 0), (2, 0), (2, 10), (0, 10)])
+area = Polygon([(0, 0), (1, 0), (1, 5), (0, 5)])
 walkable_area = pedpy.WalkableArea(area)
 # pedpy.plot_walkable_area(walkable_area=walkable_area).set_aspect("equal")
 
 
 ## Setup spawning area
-spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])
-pos_in_spawning_area = jps.distribute_until_filled(
-    polygon=spawning_area,
-    distance_to_agents=1,
-    distance_to_polygon=0.3,
-    seed=1,
-)
-num_agents = 3
-exit_area = Polygon([(0, 9), (2, 9), (2, 10), (0, 10)])
+spawning_area_list = [
+    Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+    Polygon([(0, 4), (1, 4), (1, 5), (0, 5)]),
+]
+pos_in_spawning_areas = [
+    jps.distribute_until_filled(
+        polygon=spawning_area,
+        distance_to_agents=1,
+        distance_to_polygon=0.3,
+        seed=1,
+    )
+    for spawning_area in spawning_area_list
+]
+# flattening the list
+pos_in_spawning_areas = [item for sublist in pos_in_spawning_areas for item in sublist]
+
+
+exit_area_list = [
+    Polygon([(0, 4), (1, 4), (1, 5), (0, 5)]),
+    Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+]
 
 
 ## Setup Simulation
-trajectory_file = "test_HumanoidModelV0.sqlite"  # output file
+trajectory_file = "test_HumanoidModelV0_corridor_crossing.sqlite"  # output file
 simulation = jps.Simulation(
     model=jps.HumanoidModelV0(),
     geometry=area,
@@ -33,14 +46,20 @@ simulation = jps.Simulation(
     ),
 )
 
-exit_id = simulation.add_exit_stage(exit_area.exterior.coords[:-1])
-journey = jps.JourneyDescription([exit_id])
-journey_id = simulation.add_journey(journey)
+journey_id_list = []
+exit_id_list = []
+for exit_area in exit_area_list:
+    exit_id = simulation.add_exit_stage(exit_area.exterior.coords[:-1])
+    journey = jps.JourneyDescription([exit_id])
+    exit_id_list.append(exit_id)
+    journey_id_list.append(simulation.add_journey(journey))
 
 ## Spawn agents
-v_distribution = normal(1.34, 0.5, num_agents)
+v_distribution = normal(1.34, 0.5, len(pos_in_spawning_areas))
 
-for pos, v0 in zip(pos_in_spawning_area, v_distribution):
+for pos, v0, journey_id, exit_id in zip(
+    pos_in_spawning_areas, v_distribution, journey_id_list, exit_id_list
+):
     simulation.add_agent(
         jps.HumanoidModelV0AgentParameters(
             journey_id=journey_id,
@@ -69,65 +88,25 @@ traj = TrajectoryData.data
 # print(TrajectoryData.data[TrajectoryData.data["frame"] == 10])  # .iloc[0:5])
 
 
-## Plotting results
-
-axes = pedpy.plot_walkable_area(walkable_area=walkable_area)
-axes.fill(*spawning_area.exterior.xy, color="lightgrey")
-axes.fill(*exit_area.exterior.xy, color="indianred")
+# Plot y_position of right and left heel as a function of frames on the same figure
+fig, axs = plt.subplots(1, 3, figsize=(15, 6))  # Two subplots
 
 
 # Get unique agent IDs
 unique_agent_ids = traj["id"].unique()
 
 # Create a colormap
-cmap = plt.get_cmap("viridis", len(unique_agent_ids))
+cmap = plt.get_cmap("rainbow", len(unique_agent_ids))
 
 # Initialize a counter for the color index
 color_index = 0
 
 for agent_id in traj["id"].unique():
     agent_data = traj[traj["id"] == agent_id]
+
     color = cmap(color_index)
     # Move to the next color index
     color_index += 1
-
-    # Position
-    axes.plot(
-        agent_data["x"],
-        agent_data["y"],
-        label=f"Head of Agent {agent_id}",
-        color=color,
-    )
-    # head position
-    axes.plot(
-        agent_data["head_pos_x"], agent_data["head_pos_y"], alpha=0.3, color=color
-    )
-    # heel right position
-    axes.plot(
-        agent_data["heel_right_pos_x"],
-        agent_data["heel_right_pos_y"],
-        alpha=0.3,
-        color=color,
-    )
-    # heel left position
-    axes.plot(
-        agent_data["heel_left_pos_x"],
-        agent_data["heel_left_pos_y"],
-        alpha=0.3,
-        color=color,
-    )
-
-axes.set_xlabel("x/m")
-axes.set_ylabel("y/m")
-axes.set_aspect("equal")
-plt.show()
-
-
-# Plot y_position of right and left heel as a function of frames on the same figure
-fig, axs = plt.subplots(1, 3, figsize=(15, 6))  # Two subplots
-
-for agent_id in traj["id"].unique():
-    agent_data = traj[traj["id"] == agent_id]
 
     # Y-Position Subplot
     axs[0].plot(
@@ -135,12 +114,14 @@ for agent_id in traj["id"].unique():
         agent_data["heel_right_pos_y"],
         label=f"Right Heel, Agent {agent_id}",
         ls="-",
+        color=color,
     )
     axs[0].plot(
         agent_data["frame"],
         agent_data["heel_left_pos_y"],
         label=f"Left Heel, Agent {agent_id}",
         ls="--",
+        color=color,
     )
     axs[0].plot(
         agent_data["frame"],
@@ -148,6 +129,7 @@ for agent_id in traj["id"].unique():
         label=f"Head, Agent {agent_id}",
         ls=":",
         alpha=0.5,
+        color=color,
     )
 
     # X-Position Subplot
@@ -156,12 +138,14 @@ for agent_id in traj["id"].unique():
         agent_data["heel_right_pos_x"],
         label=f"Right Heel, Agent {agent_id}",
         ls="-",
+        color=color,
     )
     axs[1].plot(
         agent_data["frame"],
         agent_data["heel_left_pos_x"],
         label=f"Left Heel, Agent {agent_id}",
         ls="--",
+        color=color,
     )
     axs[1].plot(
         agent_data["frame"],
@@ -169,20 +153,25 @@ for agent_id in traj["id"].unique():
         label=f"Head, Agent {agent_id}",
         ls=":",
         alpha=0.5,
+        color=color,
     )
 
     # X-Y Subplot
+    axs[2] = pedpy.plot_walkable_area(walkable_area=walkable_area)
+
     axs[2].plot(
         agent_data["heel_right_pos_x"],
         agent_data["heel_right_pos_y"],
         label=f"Right Heel, Agent {agent_id}",
         ls="-",
+        color=color,
     )
     axs[2].plot(
         agent_data["heel_left_pos_x"],
         agent_data["heel_left_pos_y"],
         label=f"Left Heel, Agent {agent_id}",
         ls="--",
+        color=color,
     )
     axs[2].plot(
         agent_data["head_pos_x"],
@@ -190,6 +179,7 @@ for agent_id in traj["id"].unique():
         label=f"Head, Agent {agent_id}",
         ls=":",
         alpha=0.5,
+        color=color,
     )
 
 # Y-Position Subplot Configuration

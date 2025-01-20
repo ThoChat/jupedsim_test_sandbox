@@ -15,11 +15,11 @@ walkable_area = pedpy.WalkableArea(area)
 spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])
 pos_in_spawning_area = jps.distribute_until_filled(
     polygon=spawning_area,
-    distance_to_agents=1,
+    distance_to_agents=0.8,
     distance_to_polygon=0.3,
     seed=1,
 )
-num_agents = 3
+num_agents = len(pos_in_spawning_area)
 exit_area = Polygon([(0, 9), (2, 9), (2, 10), (0, 10)])
 
 

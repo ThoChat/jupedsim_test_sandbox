@@ -61,7 +61,9 @@ axes.fill(*exit_area.exterior.xy, color="indianred")
 ## Import Sqlite with PedPy
 from sqlite_loader_moded_pepy_fun import *
 
-TrajectoryData = load_trajectory_from_jupedsim_sqlite(pathlib.Path(trajectory_file))
+TrajectoryData = load_trajectory_from_jupedsim_sqlite(
+    pathlib.Path("../" + trajectory_file)
+)
 traj = TrajectoryData.data
 
 

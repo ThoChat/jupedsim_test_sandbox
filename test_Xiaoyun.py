@@ -59,12 +59,10 @@ axes.fill(*exit_area.exterior.xy, color="indianred")
 
 
 ## Import Sqlite with PedPy
-from sqlite_loader_moded_pepy_fun import *
+from jupedsim.internal.notebook_utils import read_sqlite_file
 
-TrajectoryData = load_trajectory_from_jupedsim_sqlite(
-    pathlib.Path("../" + trajectory_file)
-)
-traj = TrajectoryData.data
+trajectory_data, walkable_area = read_sqlite_file(trajectory_file)
+traj = trajectory_data.data
 
 
 # Get unique agent IDs
@@ -88,10 +86,6 @@ for agent_id in traj["id"].unique():
         agent_data["y"],  # ["head_pos_y"],
         label=f"Head of Agent {agent_id}",
         color=color,
-    )
-    # head position
-    axes.plot(
-        agent_data["head_pos_x"], agent_data["head_pos_y"], alpha=0.3, color=color
     )
 
 

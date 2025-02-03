@@ -7,7 +7,7 @@ from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 
 ## Setup geometries
-area = Polygon([(0, 0), (1, 0), (1, 5), (0, 5)])
+area = Polygon([(0, 0), (2, 0), (2, 5), (0, 5)])
 walkable_area = pedpy.WalkableArea(area)
 # pedpy.plot_walkable_area(walkable_area=walkable_area).set_aspect("equal")
 

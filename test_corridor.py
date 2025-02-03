@@ -47,8 +47,8 @@ for pos, v0 in zip(pos_in_spawning_area, v_distribution):
             stage_id=exit_id,
             position=pos,
             head_position=pos,
-            heel_right_position=(pos[0] + 0.15, pos[1]),
-            heel_left_position=(pos[0] - 0.15, pos[1]),
+            heel_right_position=(pos[0] + 0.20, pos[1]),
+            heel_left_position=(pos[0] - 0.20, pos[1]),
             desiredSpeed=v0,
             height=1.7,
         )

@@ -15,7 +15,7 @@ walkable_area = pedpy.WalkableArea(area)
 spawning_area = Polygon([(0, -2), (8, -2), (8, 2), (0, 2)])
 pos_in_spawning_area = jps.distribute_until_filled(
     polygon=spawning_area,
-    distance_to_agents=1,
+    distance_to_agents=3,
     distance_to_polygon=0.4,
     seed=1,
 )
@@ -24,7 +24,7 @@ exit_area = Polygon([(10, 11), (12, 11), (12, 12), (10, 12)])
 
 
 ## Setup Simulation
-trajectory_file = "test_HumanoidModelV0.sqlite"  # output file
+trajectory_file = "test_HumanoidModelV0_corner.sqlite"  # output file
 simulation = jps.Simulation(
     model=jps.HumanoidModelV0(),
     geometry=area,

@@ -15,7 +15,6 @@ frame_data = cursor.fetchall()
 
 # Get the bounding box of the simulation
 query = "SELECT value FROM metadata WHERE key = ?;"
-query = "SELECT value FROM metadata WHERE key =?;"
 cursor.execute(query, ("xmin",))
 xmin = float(cursor.fetchone()[0])
 cursor.execute(query, ("xmax",))
@@ -186,24 +185,14 @@ ani = animation.FuncAnimation(
 )
 
 
-plt.show()
-# import matplotlib.animation as animation
+# plt.show()
+import matplotlib.animation as animation
 
-# ani = animation.FuncAnimation(
-#     fig,
-#     update,
-#     frames=range(1, max(frame_data, key=lambda x: x[0])[0] + 1),
-#     interval=25,
-# )
-# writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
-# ani.save("animation.mp4", writer=writer)
-# ani = animation.FuncAnimation(
-
-# import matplotlib.animation as animation
-#     fig,
-#     update,
-#     frames=range(1, max(frame_data, key=lambda x: x[0])[0] + 1),
-#     interval=25,
-# )
-# writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
-# ani.save("animation.mp4", writer=writer)
+ani = animation.FuncAnimation(
+    fig,
+    update,
+    frames=range(1, max(frame_data, key=lambda x: x[0])[0] + 1),
+    interval=25,
+)
+writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
+ani.save("animation.mp4", writer=writer)

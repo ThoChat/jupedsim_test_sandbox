@@ -177,7 +177,7 @@ def update(frame):
 
 
 # Create the animation
-ani = animation.FuncAnimation(
+anim = animation.FuncAnimation(
     fig,
     update,
     frames=range(1, max(frame_data, key=lambda x: x[0])[0] + 1),
@@ -188,11 +188,16 @@ ani = animation.FuncAnimation(
 # plt.show()
 import matplotlib.animation as animation
 
-ani = animation.FuncAnimation(
+anim = animation.FuncAnimation(
     fig,
     update,
     frames=range(1, max(frame_data, key=lambda x: x[0])[0] + 1),
     interval=25,
 )
-writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
-ani.save("animation.mp4", writer=writer)
+
+### Save the animation as a video file
+# writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
+# anim.save("animation.mp4", writer=writer)
+
+# Show the plot
+plt.show()

@@ -2,12 +2,11 @@
 ####   This sript create a simple corridor simulation #####
 ###########################################################
 
-
+import numpy as np
 import pathlib
 import matplotlib.pyplot as plt
 import jupedsim as jps
 import pedpy
-from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 
 ## Setup geometries
@@ -18,12 +17,17 @@ walkable_area = pedpy.WalkableArea(area)
 
 ## Setup spawning area
 spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])
-pos_in_spawning_area = jps.distribute_until_filled(
-    polygon=spawning_area,
-    distance_to_agents=0.8,
-    distance_to_polygon=0.3,
-    seed=1,
-)
+pos_in_spawning_area = [
+    (0.834044009405148, 1.4406489868843162),
+    (np.float64(0.35818596216566845), np.float64(0.3368317073802509)),
+    (np.float64(1.3621137797930702), np.float64(0.5038329238188515)),
+]
+# pos_in_spawning_area = jps.distribute_until_filled(
+#     polygon=spawning_area,
+#     distance_to_agents=0.8,
+#     distance_to_polygon=0.3,
+#     seed=1,
+# )
 num_agents = len(pos_in_spawning_area)
 exit_area = Polygon([(0, 9), (2, 9), (2, 10), (0, 10)])
 
@@ -43,7 +47,7 @@ journey = jps.JourneyDescription([exit_id])
 journey_id = simulation.add_journey(journey)
 
 ## Spawn agents
-v_distribution = normal(1.34, 0.5, num_agents)
+v_distribution = np.ones(num_agents)
 
 for pos, v0 in zip(pos_in_spawning_area, v_distribution):
     simulation.add_agent(

@@ -33,7 +33,7 @@ exit_area = Polygon([(0, 9), (2, 9), (2, 10), (0, 10)])
 
 
 ## Setup Simulation
-trajectory_file = "quick_test.sqlite"  # output file
+trajectory_file = "quick_corridor_sim.sqlite"  # output file
 simulation = jps.Simulation(
     model=jps.HumanoidModelV0(),
     geometry=area,

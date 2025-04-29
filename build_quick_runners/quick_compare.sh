@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clear
-
+cd ../../jpscore/build
 # Compile with ninja
 echo "Compiling with ninja..."
 if ! ninja; then

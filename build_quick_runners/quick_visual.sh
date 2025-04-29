@@ -1,7 +1,7 @@
 #!/bin/bash
 
 clear
-
+cd ../../jpscore/build
 # Compile with ninja
 echo "Compiling with ninja..."
 if ! ninja; then
@@ -14,6 +14,6 @@ source environment
 python ../../jupedsim_test_sandbox/build_quick_runners/quick_corridor_sim.py
 
 # create visual
-python ../../jupedsim_test_sandbox/visualisator_humanoid_paradigm.py
+python ../../jupedsim_test_sandbox/visualisator_humanoid_paradigm.py quick_corridor_sim.sqlite
 
 

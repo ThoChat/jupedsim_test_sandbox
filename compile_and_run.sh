@@ -23,7 +23,7 @@ fi
 
 # Check if a Python file name was provided
 if [ -z "$1" ]; then
-    echo "Usage: $0 <python_script.py>"
+    echo "No simulation provided."
     exit 1
 fi
 

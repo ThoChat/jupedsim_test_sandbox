@@ -24,7 +24,7 @@ exit_area = Polygon([(10, 11), (12, 11), (12, 12), (10, 12)])
 
 
 ## Setup Simulation
-trajectory_file = "test_HumanoidModelV0_corner.sqlite"  # output file
+trajectory_file = "corner_HumanoidModelV0.sqlite"  # output file
 simulation = jps.Simulation(
     model=jps.HumanoidModelV0(),
     geometry=area,
@@ -66,42 +66,42 @@ TrajectoryData = load_trajectory_from_jupedsim_sqlite(pathlib.Path(trajectory_fi
 ## Plotting results
 
 
-axes = pedpy.plot_walkable_area(walkable_area=walkable_area)
-axes.fill(*spawning_area.exterior.xy, color="lightgrey")
-axes.fill(*exit_area.exterior.xy, color="indianred")
+# axes = pedpy.plot_walkable_area(walkable_area=walkable_area)
+# axes.fill(*spawning_area.exterior.xy, color="lightgrey")
+# axes.fill(*exit_area.exterior.xy, color="indianred")
 
-traj = TrajectoryData.data
-
-
-# Get unique agent IDs
-unique_agent_ids = traj["id"].unique()
-
-# Create a colormap
-cmap = plt.get_cmap("viridis", len(unique_agent_ids))
-
-# Initialize a counter for the color index
-color_index = 0
-
-for agent_id in traj["id"].unique():
-    agent_data = traj[traj["id"] == agent_id]
-    color = cmap(color_index)
-    # Move to the next color index
-    color_index += 1
-
-    # Position
-    axes.plot(
-        agent_data["x"],
-        agent_data["y"],  # ["head_pos_y"],
-        label=f"Head of Agent {agent_id}",
-        color=color,
-    )
-    # head position
-    axes.plot(
-        agent_data["head_pos_x"], agent_data["head_pos_y"], alpha=0.3, color=color
-    )
+# traj = TrajectoryData.data
 
 
-axes.set_xlabel("x/m")
-axes.set_ylabel("y/m")
-axes.set_aspect("equal")
-plt.show()
+# # Get unique agent IDs
+# unique_agent_ids = traj["id"].unique()
+
+# # Create a colormap
+# cmap = plt.get_cmap("viridis", len(unique_agent_ids))
+
+# # Initialize a counter for the color index
+# color_index = 0
+
+# for agent_id in traj["id"].unique():
+#     agent_data = traj[traj["id"] == agent_id]
+#     color = cmap(color_index)
+#     # Move to the next color index
+#     color_index += 1
+
+#     # Position
+#     axes.plot(
+#         agent_data["x"],
+#         agent_data["y"],  # ["head_pos_y"],
+#         label=f"Head of Agent {agent_id}",
+#         color=color,
+#     )
+#     # head position
+#     axes.plot(
+#         agent_data["head_pos_x"], agent_data["head_pos_y"], alpha=0.3, color=color
+#     )
+
+
+# axes.set_xlabel("x/m")
+# axes.set_ylabel("y/m")
+# axes.set_aspect("equal")
+# plt.show()

@@ -46,11 +46,11 @@ for pos, v0 in zip(pos_in_spawning_area, v_distribution):
             journey_id=journey_id,
             stage_id=exit_id,
             position=pos,
-            head_position=pos,
-            heel_right_position=(pos[0] + 0.20, pos[1]),
-            heel_left_position=(pos[0] - 0.20, pos[1]),
+            head_position=[pos[0], pos[1], 1.75],
+            heel_right_position=(pos[0] + 0.20, pos[1], 0.0),
+            heel_left_position=(pos[0] - 0.20, pos[1], 0.0),
             desiredSpeed=v0,
-            height=1.7,
+            height=1.75,
         )
     )
 

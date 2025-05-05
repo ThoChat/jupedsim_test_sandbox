@@ -8,7 +8,7 @@ import matplotlib.animation as animation
 
 
 # Connect to the SQLite database
-def create_visualisator(simulation_file_name):
+def create_visualisator(simulation_file_name, saving_file_name=""):
     conn = sqlite3.connect(simulation_file_name)
     cursor = conn.cursor()
 
@@ -51,6 +51,9 @@ def create_visualisator(simulation_file_name):
         ax.set_ylim(ymin, ymax)
         ax.set_zlim(-pelvis_height, 2)
         ax.set_aspect("equal", adjustable="box")
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.set_zticklabels([])
 
     # Function to update the plot for each frame
     def update(frame):
@@ -65,11 +68,23 @@ def create_visualisator(simulation_file_name):
             pos_x, pos_y = agent[2], agent[3]
             ori_x, ori_y = agent[4], agent[5]
             normal_ori_x, normal_ori_y = -ori_y, ori_x
-            heel_right_pos_x, heel_right_pos_y = agent[11], agent[12]
-            heel_left_pos_x, heel_left_pos_y = agent[13], agent[14]
-            shoulder_rotation_angle_z = agent[6]
-            trunk_rotation_angle_x = agent[9]
-            trunk_rotation_angle_y = agent[10]
+            (
+                heel_right_pos_x,
+                heel_right_pos_y,
+                heel_right_pos_z,
+            ) = (
+                agent[12],
+                agent[13],
+                agent[14],
+            )
+            heel_left_pos_x, heel_left_pos_y, heel_left_pos_z = (
+                agent[15],
+                agent[16],
+                agent[17],
+            )
+            shoulder_rotation_angle_z = agent[7]
+            trunk_rotation_angle_x = agent[10]
+            trunk_rotation_angle_y = agent[11]
 
             # Calculate the end points of the pelvis segment
             pelvis_right_x = pos_x - (normal_ori_x * pelvis_width * 0.5)
@@ -95,7 +110,7 @@ def create_visualisator(simulation_file_name):
             ax.plot(
                 [right_foot_end_x1, right_foot_end_x2],
                 [right_foot_end_y1, right_foot_end_y2],
-                [-pelvis_height, -pelvis_height],
+                [heel_right_pos_z - pelvis_height, heel_right_pos_z - pelvis_height],
                 "g-",
             )
 
@@ -109,7 +124,7 @@ def create_visualisator(simulation_file_name):
             ax.plot(
                 [left_foot_end_x1, left_foot_end_x2],
                 [left_foot_end_y1, left_foot_end_y2],
-                [-pelvis_height, -pelvis_height],
+                [heel_left_pos_z - pelvis_height, heel_left_pos_z - pelvis_height],
                 "r-",
             )
 
@@ -191,14 +206,15 @@ def create_visualisator(simulation_file_name):
         interval=25,
     )
 
-    ### Save the animation as a video file
-    # writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
-    # anim.save("animation.mp4", writer=writer)
-
-    # Show the plot
-    plt.show()
+    if saving_file_name != "":
+        # Save the animation as a video file
+        writer = animation.FFMpegWriter(fps=30, metadata=dict(artist="Me"))
+        anim.save(saving_file_name, writer=writer)
+    else:
+        plt.show()
 
 
 if __name__ == "__main__":
     file_name = sys.argv[1]
-    create_visualisator(file_name)
+    saving_file_name = sys.argv[2] if len(sys.argv) > 2 else ""
+    create_visualisator(file_name, saving_file_name)

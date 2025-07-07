@@ -63,14 +63,9 @@ def load_trajectory_from_jupedsim_sqlite(
     with sqlite3.connect(trajectory_file) as con:
         try:
             data = pd.read_sql_query(
-                "select frame, id,"
-                + "pos_x as x, pos_y as y,"
-                + "head_pos_x, head_pos_y,"
-                + "shoulder_rotation_angle_z, "
-                + "trunk_rotation_angle_x, "
-                + "trunk_rotation_angle_y, "
-                + "heel_right_pos_x, heel_right_pos_y,"
-                + "heel_left_pos_x, heel_left_pos_y from trajectory_data",
+                "SELECT frame, id, pos_x as x, pos_y as y, head_pos_x, head_pos_y, head_pos_z, pelvis_pos_x, pelvis_pos_y, pelvis_pos_z, "
+                "shoulder_rotation_angle_z, trunk_rotation_angle_x, trunk_rotation_angle_y, heel_right_pos_x, heel_right_pos_y, "
+                "heel_right_pos_z, heel_left_pos_x, heel_left_pos_y, heel_left_pos_z FROM trajectory_data",
                 con,
             )
         except Exception as exc:

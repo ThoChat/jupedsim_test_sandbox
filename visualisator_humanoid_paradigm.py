@@ -29,12 +29,12 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
     # , xmax, ymin, ymax = cursor.fetchone()
 
     # Set anthropological parameters
-    pelvis_width = 0.4
-    pelvis_height = 0.9
-    feet_length = 0.25
-    trunk_length = 0.7
-    shoulder_width = 0.45
-    head_length = 0.2
+    height = 1.75
+    pelvis_width = height * 0.4 / 1.7
+    feet_length = height * (0.1470 * 0.75)
+    trunk_length = height * 0.3495
+    shoulder_width = height * 0.45 / 1.7
+    neck_length = height * 0.1396
 
     # Create a 3D figure
     fig = plt.figure()
@@ -49,7 +49,7 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
         ax.set_zlabel("Z")
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
-        ax.set_zlim(-pelvis_height, 2)
+        ax.set_zlim(0, 2)
         ax.set_aspect("equal", adjustable="box")
         ax.set_xticklabels([])
         ax.set_yticklabels([])
@@ -68,63 +68,78 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             pos_x, pos_y = agent[2], agent[3]
             ori_x, ori_y = agent[4], agent[5]
             normal_ori_x, normal_ori_y = -ori_y, ori_x
-            (
-                heel_right_pos_x,
-                heel_right_pos_y,
-                heel_right_pos_z,
-            ) = (
-                agent[12],
-                agent[13],
-                agent[14],
+            head_pos = np.array(
+                [
+                    agent[6],
+                    agent[7],
+                    agent[8],
+                ]
             )
-            heel_left_pos_x, heel_left_pos_y, heel_left_pos_z = (
-                agent[15],
-                agent[16],
-                agent[17],
+            pelvis_pos = np.array(
+                [
+                    agent[9],
+                    agent[10],
+                    agent[11],
+                ]
             )
-            shoulder_rotation_angle_z = agent[7]
-            trunk_rotation_angle_x = agent[10]
-            trunk_rotation_angle_y = agent[11]
+            shoulder_rotation_angle_z = agent[12]
+            trunk_rotation_angle_x = agent[13]
+            trunk_rotation_angle_y = agent[14]
+            heel_right_pos = np.array(
+                [
+                    agent[15],
+                    agent[16],
+                    agent[17],
+                ]
+            )
+
+            heel_left_pos = np.array(
+                [
+                    agent[18],
+                    agent[19],
+                    agent[20],
+                ]
+            )
 
             # Calculate the end points of the pelvis segment
-            pelvis_right_x = pos_x - (normal_ori_x * pelvis_width * 0.5)
-            pelvis_right_y = pos_y - (normal_ori_y * pelvis_width * 0.5)
-            pelvis_left_x = pos_x + (normal_ori_x * pelvis_width * 0.5)
-            pelvis_left_y = pos_y + (normal_ori_y * pelvis_width * 0.5)
+            pelvis_right_x = pelvis_pos[0] - (normal_ori_x * pelvis_width * 0.5)
+            pelvis_right_y = pelvis_pos[1] - (normal_ori_y * pelvis_width * 0.5)
+            pelvis_left_x = pelvis_pos[0] + (normal_ori_x * pelvis_width * 0.5)
+            pelvis_left_y = pelvis_pos[1] + (normal_ori_y * pelvis_width * 0.5)
 
             # Plot the pelvis segment
             ax.plot(
                 [pelvis_right_x, pelvis_left_x],
                 [pelvis_right_y, pelvis_left_y],
-                [0, 0],
+                [pelvis_pos[2], pelvis_pos[2]],
                 "b-",
             )
 
             # Calculate the end points of the right foot
-            right_foot_end_x1 = heel_right_pos_x
-            right_foot_end_y1 = heel_right_pos_y
-            right_foot_end_x2 = heel_right_pos_x + (ori_x * feet_length)
-            right_foot_end_y2 = heel_right_pos_y + (ori_y * feet_length)
+            right_foot_end_x1 = heel_right_pos[0]
+            right_foot_end_y1 = heel_right_pos[1]
+            right_foot_end_x2 = heel_right_pos[0] + (ori_x * feet_length)
+            right_foot_end_y2 = heel_right_pos[1] + (ori_y * feet_length)
 
             # Plot the right foot
             ax.plot(
                 [right_foot_end_x1, right_foot_end_x2],
                 [right_foot_end_y1, right_foot_end_y2],
-                [heel_right_pos_z - pelvis_height, heel_right_pos_z - pelvis_height],
+                [heel_right_pos[2], heel_right_pos[2]],
                 "g-",
             )
 
             # Calculate the end points of the left foot
-            left_foot_end_x1 = heel_left_pos_x
-            left_foot_end_y1 = heel_left_pos_y
-            left_foot_end_x2 = heel_left_pos_x + (ori_x * feet_length)
-            left_foot_end_y2 = heel_left_pos_y + (ori_y * feet_length)
+            left_foot_end_x1 = heel_left_pos[0]
+            left_foot_end_y1 = heel_left_pos[1]
+            left_foot_end_x2 = heel_left_pos[0] + (ori_x * feet_length)
+            left_foot_end_y2 = heel_left_pos[1] + (ori_y * feet_length)
 
             # Plot the left foot
             ax.plot(
                 [left_foot_end_x1, left_foot_end_x2],
                 [left_foot_end_y1, left_foot_end_y2],
-                [heel_left_pos_z - pelvis_height, heel_left_pos_z - pelvis_height],
+                [heel_left_pos[2], heel_left_pos[2]],
                 "r-",
             )
 
@@ -132,20 +147,20 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             ax.plot(
                 [pelvis_right_x, right_foot_end_x1],
                 [pelvis_right_y, right_foot_end_y1],
-                [0, -pelvis_height],
+                [pelvis_pos[2], heel_right_pos[2]],
                 "b-",
             )
             ax.plot(
                 [pelvis_left_x, left_foot_end_x1],
                 [pelvis_left_y, left_foot_end_y1],
-                [0, -pelvis_height],
+                [pelvis_pos[2], heel_left_pos[2]],
                 "b-",
             )
 
             # Calculate the position of C7
             c7_pos_x = pos_x + ori_x * np.sin(trunk_rotation_angle_y) * trunk_length
             c7_pos_y = pos_y + (ori_y * np.sin(trunk_rotation_angle_x) * trunk_length)
-            c7_pos_z = (
+            c7_pos_z = pelvis_pos[2] + (
                 trunk_length
                 * np.cos(trunk_rotation_angle_x)
                 * np.cos(trunk_rotation_angle_y)
@@ -155,14 +170,14 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             ax.plot(
                 [pos_x, c7_pos_x],
                 [pos_y, c7_pos_y],
-                [0, c7_pos_z],
+                [pelvis_pos[2], c7_pos_z],
                 "b-",
             )
 
             # Calculate the head position ### Math have to be checked
             head_pos_x = c7_pos_x
             head_pos_y = c7_pos_y
-            head_pos_z = c7_pos_z + head_length
+            head_pos_z = c7_pos_z + neck_length
 
             # Plot the head position ### Math have to be checked (x,y rotation missing)
             ax.plot(
@@ -187,7 +202,7 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             ax.plot(
                 [shoulder_right_x, shoulder_left_x],
                 [shoulder_right_y, shoulder_left_y],
-                [trunk_length, trunk_length],
+                [pelvis_pos[2] + trunk_length, pelvis_pos[2] + trunk_length],
                 "b-",
             )
 

@@ -15,7 +15,7 @@ walkable_area = pedpy.WalkableArea(area)
 spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])
 pos_in_spawning_area = jps.distribute_until_filled(
     polygon=spawning_area,
-    distance_to_agents=0.8,  # 0.8, # for three agents
+    distance_to_agents=5,  # 0.8, # for three agents
     distance_to_polygon=0.3,
     seed=1,
 )
@@ -46,9 +46,6 @@ for pos, v0 in zip(pos_in_spawning_area, v_distribution):
             journey_id=journey_id,
             stage_id=exit_id,
             position=pos,
-            head_position=[pos[0], pos[1], 1.75],
-            heel_right_position=(pos[0] + 0.20, pos[1], 0.0),
-            heel_left_position=(pos[0] - 0.20, pos[1], 0.0),
             desiredSpeed=v0,
             height=1.75,
         )

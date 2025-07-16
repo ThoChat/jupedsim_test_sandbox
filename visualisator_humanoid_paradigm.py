@@ -82,30 +82,39 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
                     agent[11],
                 ]
             )
-            shoulder_rotation_angle_z = agent[12]
-            trunk_rotation_angle_x = agent[13]
-            trunk_rotation_angle_y = agent[14]
             heel_right_pos = np.array(
+                [
+                    agent[12],
+                    agent[13],
+                    agent[14],
+                ]
+            )
+
+            heel_left_pos = np.array(
                 [
                     agent[15],
                     agent[16],
                     agent[17],
                 ]
             )
-
-            heel_left_pos = np.array(
-                [
-                    agent[18],
-                    agent[19],
-                    agent[20],
-                ]
-            )
+            pelvis_rotation_angle_z = agent[18]
+            shoulder_rotation_angle_z = agent[19]
+            trunk_rotation_angle_x = agent[20]
+            trunk_rotation_angle_y = agent[21]
 
             # Calculate the end points of the pelvis segment
-            pelvis_right_x = pelvis_pos[0] - (normal_ori_x * pelvis_width * 0.5)
-            pelvis_right_y = pelvis_pos[1] - (normal_ori_y * pelvis_width * 0.5)
-            pelvis_left_x = pelvis_pos[0] + (normal_ori_x * pelvis_width * 0.5)
-            pelvis_left_y = pelvis_pos[1] + (normal_ori_y * pelvis_width * 0.5)
+            pelvis_right_x = pelvis_pos[0] + (
+                np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            )
+            pelvis_right_y = pelvis_pos[1] + (
+                np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            )
+            pelvis_left_x = pelvis_pos[0] - (
+                np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            )
+            pelvis_left_y = pelvis_pos[1] - (
+                np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            )
 
             # Plot the pelvis segment
             ax.plot(

@@ -43,6 +43,7 @@ journey_id = simulation.add_journey(journey)
 
 ## Spawn agents
 v_distribution = normal(1.34, 0.5, num_agents)
+# v_distribution = normal(5, 0.5, num_agents)
 
 for pos, v0 in zip(pos_in_spawning_area, v_distribution):
     simulation.add_agent(
@@ -56,7 +57,6 @@ for pos, v0 in zip(pos_in_spawning_area, v_distribution):
     )
 
 ## run simulation
-# print(isinstance(agent.model, jps.py_jupedsim.HumanoidModelV0State))
 while simulation.agent_count() > 0 and simulation.iteration_count() <= 3000:
     if simulation.iteration_count() == 3000:
         print("Simulation stopped after 3000 iterations.")

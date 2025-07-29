@@ -97,10 +97,26 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
                     agent[17],
                 ]
             )
-            pelvis_rotation_angle_z = agent[18]
-            shoulder_rotation_angle_z = agent[19]
-            trunk_rotation_angle_x = agent[20]
-            trunk_rotation_angle_y = agent[21]
+
+            toe_right_pos = np.array(
+                [
+                    agent[18],
+                    agent[19],
+                    agent[20],
+                ]
+            )
+            toe_left_pos = np.array(
+                [
+                    agent[21],
+                    agent[22],
+                    agent[23],
+                ]
+            )
+
+            pelvis_rotation_angle_z = agent[24]
+            shoulder_rotation_angle_z = agent[25]
+            trunk_rotation_angle_x = agent[26]
+            trunk_rotation_angle_y = agent[27]
 
             # Calculate the end points of the pelvis segment
             pelvis_right_x = pelvis_pos[0] + (
@@ -127,8 +143,8 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             # Calculate the end points of the right foot
             right_foot_end_x1 = heel_right_pos[0]
             right_foot_end_y1 = heel_right_pos[1]
-            right_foot_end_x2 = heel_right_pos[0] + (ori_x * feet_length)
-            right_foot_end_y2 = heel_right_pos[1] + (ori_y * feet_length)
+            right_foot_end_x2 = toe_right_pos[0]
+            right_foot_end_y2 = toe_right_pos[1]
 
             # Plot the right foot
             ax.plot(
@@ -141,8 +157,8 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             # Calculate the end points of the left foot
             left_foot_end_x1 = heel_left_pos[0]
             left_foot_end_y1 = heel_left_pos[1]
-            left_foot_end_x2 = heel_left_pos[0] + (ori_x * feet_length)
-            left_foot_end_y2 = heel_left_pos[1] + (ori_y * feet_length)
+            left_foot_end_x2 = toe_left_pos[0]
+            left_foot_end_y2 = toe_left_pos[1]
 
             # Plot the left foot
             ax.plot(
@@ -194,17 +210,17 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             )
 
             # Calculate the shoulder segment
-            shoulder_right_x = c7_pos_x - (
-                np.cos(shoulder_rotation_angle_z) * normal_ori_x * shoulder_width * 0.5
+            shoulder_right_x = c7_pos_x + (
+                np.cos(shoulder_rotation_angle_z) * shoulder_width * 0.5
             )
-            shoulder_right_y = c7_pos_y - (
-                np.sin(shoulder_rotation_angle_z) * normal_ori_y * shoulder_width * 0.5
+            shoulder_right_y = c7_pos_y + (
+                np.sin(shoulder_rotation_angle_z) * shoulder_width * 0.5
             )
-            shoulder_left_x = c7_pos_x + (
-                np.cos(shoulder_rotation_angle_z) * normal_ori_x * shoulder_width * 0.5
+            shoulder_left_x = c7_pos_x - (
+                np.cos(shoulder_rotation_angle_z) * shoulder_width * 0.5
             )
-            shoulder_left_y = c7_pos_y + (
-                np.sin(shoulder_rotation_angle_z) * normal_ori_y * shoulder_width * 0.5
+            shoulder_left_y = c7_pos_y - (
+                np.sin(shoulder_rotation_angle_z) * shoulder_width * 0.5
             )
 
             # Plot the shoulder segment

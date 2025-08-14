@@ -84,25 +84,25 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             trunk_rotation_angle_y = agent[27]
 
             # Pelvis segment
-            pelvis_right_x = (
-                pelvis_pos[0] + np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
-            )
-            pelvis_right_y = (
-                pelvis_pos[1] + np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
-            )
-            pelvis_left_x = (
-                pelvis_pos[0] - np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
-            )
-            pelvis_left_y = (
-                pelvis_pos[1] - np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
-            )
+            # pelvis_right_x = (
+            #     pelvis_pos[0] + np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            # )
+            # pelvis_right_y = (
+            #     pelvis_pos[1] + np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            # )
+            # pelvis_left_x = (
+            #     pelvis_pos[0] - np.cos(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            # )
+            # pelvis_left_y = (
+            #     pelvis_pos[1] - np.sin(pelvis_rotation_angle_z) * pelvis_width * 0.5
+            # )
 
-            ax.plot(
-                [pelvis_right_x, pelvis_left_x],
-                [pelvis_right_y, pelvis_left_y],
-                [pelvis_pos[2], pelvis_pos[2]],
-                "b-",
-            )
+            # ax.plot(
+            #     [pelvis_right_x, pelvis_left_x],
+            #     [pelvis_right_y, pelvis_left_y],
+            #     [pelvis_pos[2], pelvis_pos[2]],
+            #     "b-",
+            # )
 
             # Feet
             ax.plot(
@@ -120,14 +120,14 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
 
             # Legs
             ax.plot(
-                [pelvis_right_x, heel_right_pos[0]],
-                [pelvis_right_y, heel_right_pos[1]],
+                [pos_x, heel_right_pos[0]],  # [pelvis_right_x, heel_right_pos[0]],
+                [pos_y, heel_right_pos[1]],  # [pelvis_right_y, heel_right_pos[1]],
                 [pelvis_pos[2], heel_right_pos[2]],
                 "b-",
             )
             ax.plot(
-                [pelvis_left_x, heel_left_pos[0]],
-                [pelvis_left_y, heel_left_pos[1]],
+                [pos_x, heel_left_pos[0]],  # [pelvis_left_x, heel_left_pos[0]],
+                [pos_y, heel_left_pos[1]],  # [pelvis_left_y, heel_left_pos[1]],
                 [pelvis_pos[2], heel_left_pos[2]],
                 "b-",
             )
@@ -168,6 +168,30 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
                 [shoulder_right_y, shoulder_left_y],
                 [pelvis_pos[2] + trunk_length, pelvis_pos[2] + trunk_length],
                 "b-",
+            )
+
+            ## radius
+            # Calculate distances from pelvis center to each foot heel
+            distance_right = np.linalg.norm(heel_right_pos[:2] - pelvis_pos[:2])
+            distance_left = np.linalg.norm(heel_left_pos[:2] - pelvis_pos[:2])
+
+            # Maximum distance
+            radius = 0.3
+
+            # Create a circle in the XY plane centered at the pelvis position
+            theta = np.linspace(0, 2 * np.pi, 100)
+            circle_x = pelvis_pos[0] + radius * np.cos(theta)
+            circle_y = pelvis_pos[1] + radius * np.sin(theta)
+            circle_z = np.full_like(
+                circle_x, pelvis_pos[2]
+            )  # Keep circle at pelvis height
+
+            ax.plot(
+                circle_x,
+                circle_y,
+                circle_z,
+                "k--",
+                linewidth=1,
             )
 
         ax.set_title(f"Frame {frame}")

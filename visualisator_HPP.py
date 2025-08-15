@@ -175,7 +175,7 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
             distance_right = np.linalg.norm(heel_right_pos[:2] - pelvis_pos[:2])
             distance_left = np.linalg.norm(heel_left_pos[:2] - pelvis_pos[:2])
 
-            # Maximum distance
+            # colision radius
             radius = 0.3
 
             # Create a circle in the XY plane centered at the pelvis position

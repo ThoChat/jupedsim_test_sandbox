@@ -57,26 +57,7 @@ for pos, v0 in zip(pos_in_spawning_area, v_distribution):
 # # plt.show()
 
 ## run simulation
-while simulation.agent_count() > 0:
+while simulation.agent_count() > 0 and simulation.iteration_count() <= 3000:
+    if simulation.iteration_count() == 3000:
+        print("Simulation stopped after 3000 iterations.")
     simulation.iterate()
-
-    # ## plot the trajectory of the agents
-    # for agent in simulation.agents():
-    #     ax.scatter(
-    #         agent.position[0],
-    #         agent.position[1],
-    #         color="blue",
-    #         s=10,
-    #         label="Agent Trajectory",
-    #     )
-    # if simulation.iteration_count() % 100 == 0:
-    #     plt.show()
-    #     figure, ax = plt.subplots(figsize=(10, 6))
-    #     pedpy.plot_walkable_area(walkable_area=walkable_area, axes=ax).set_aspect(
-    #         "equal"
-    #     )
-
-## Import Sqlite with PedPy
-# from sqlite_loader_moded_pepy_fun import *
-
-# TrajectoryData = load_trajectory_from_jupedsim_sqlite(pathlib.Path(trajectory_file))

@@ -6,15 +6,16 @@ import pedpy
 from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 from shapely.wkt import loads
-from shapely.ops import unary_union
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 ## Setup geometries
+bottleneck_width = 0.4
 area_exp = loads(
-    "POLYGON ((5 -5, 5 2, -5 2, -5 -5, 5 -5), "
-    "(0.2 0, 4.99 0, 4.99 1, 1 1, 1 0.2, 0.2 0.2, 0.2 0), "
-    "(-0.2 0, -0.2 0.2, -1 0.2, -1 1, -4.99 1, -4.99 0, -0.2 0)))"
+    f"POLYGON ((5 -5, 5 2, -5 2, -5 -5, 5 -5), "
+    f"({bottleneck_width} 0, 4.99 0, 4.99 1, 1 1, 1 {bottleneck_width}, {bottleneck_width} {bottleneck_width}, {bottleneck_width} 0), "
+    f"(-{bottleneck_width} 0, -{bottleneck_width} {bottleneck_width}, -1 {bottleneck_width}, -1 1, -4.99 1, -4.99 0, -{bottleneck_width} 0))"
 )
 
 
@@ -35,7 +36,7 @@ area_exp = loads(
 
 ## all starting positions (for left to right when looking to the bottleneck)
 starting_positions = [
-    (-4, -0.5),
+    # (-4, -0.5),
     (-3.7, -2.15),
     (-2.15, -3.7),
     (0, -4),
@@ -46,7 +47,7 @@ starting_positions = [
 
 num_agents = len(starting_positions)  # one agent per starting position
 
-exit_area = Polygon([(-0.2, 1.2), (0.2, 1.2), (0.2, 1.3), (-0.2, 1.3)])
+exit_area = Polygon([(-0.5, 1.0), (0.5, 1.0), (0.5, 1.3), (-0.5, 1.3)])
 
 
 ## Setup Simulation
@@ -74,6 +75,7 @@ simulation.add_agent(
         position=starting_positions[0],
         desiredSpeed=v_distribution[0],
         height=1.75,
+        radius=0.05,
     )
 )
 
@@ -86,24 +88,4 @@ pedpy.plot_walkable_area(walkable_area=pedpy.WalkableArea(area_exp), ax=ax).set_
 # print(isinstance(agent.model, jps.py_jupedsim.HumanoidModelV0State))
 while simulation.agent_count() > 0 and simulation.iteration_count() < 3000:
 
-    try:
-        simulation.iterate()
-        # print(simulation.iteration_count())
-
-        ## plot the trajectory of the agents
-        for agent in simulation.agents():
-            ax.scatter(
-                agent.position[0],
-                agent.position[1],
-                color="blue",
-                s=10,
-                label="Agent Trajectory",
-            )
-        if simulation.iteration_count() % 1000 == 0:
-            plt.show()
-            figure, ax = plt.subplots(figsize=(10, 6))
-            pedpy.plot_walkable_area(
-                walkable_area=pedpy.WalkableArea(area_exp), ax=ax
-            ).set_aspect("equal")
-    except:
-        plt.show()
+    simulation.iterate()

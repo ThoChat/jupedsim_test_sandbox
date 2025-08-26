@@ -51,11 +51,11 @@ for i, pos in enumerate(waypoint_positions):
 # --- 4. Define the Exit Stage ---
 # Create a polygon for the exit area, typically at the end of the corridor. [8]
 exit_coords = [
-    (9.8, 0.0),
+    (9.5, 0.0),
     (10.0, 0.0),
     (10.0, 10.0),
-    (9.8, 10.0),
-    (9.8, 0.0),  # Close the polygon
+    (9.5, 10.0),
+    (9.5, 0.0),  # Close the polygon
 ]
 exit_polygon = shapely.geometry.Polygon(exit_coords)
 # Add the exit stage to the simulation. [8]

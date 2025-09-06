@@ -47,6 +47,13 @@ for row in data:
 
 df = pd.DataFrame(data_rows)
 
+
+# Truncate the df to have a fraction of the frames
+threshold_frame = df["frame"].quantile(0.31)
+# Truncate the DataFrame
+df = df[df["frame"] <= threshold_frame].copy()
+
+
 # post-oc computation of the Xcom = pelvis_pos + pelvis speed / sqrt(9.81 / pelvis_z[0] )
 omega = np.sqrt((9.81 / df[df["agent_id"] == 1]["pelvis_z"].iloc[1]))
 
@@ -55,14 +62,26 @@ dt = df["time"].diff()  # time differences
 df["pelvis_vx"] = df["pelvis_x"].diff() / dt
 df["pelvis_vy"] = df["pelvis_y"].diff() / dt
 
-# Compute Xcom
+# # Compute Xcom
 df["Xcom_x"] = df["pelvis_x"] + df["pelvis_vx"] / omega
 df["Xcom_y"] = df["pelvis_y"] + df["pelvis_vy"] / omega
 
-
 # Create figure and primary axis
-fig, ax1 = plt.subplots(figsize=(7, 5))
+SizeFactor = 1
+fig, ax1 = plt.subplots(figsize=(SizeFactor * 8.1962 * 3, SizeFactor * 6.396))
 
+# Styling constants
+palette = {
+    "pelvis": "blue",
+    "Xcom": "purple",  # Changed to match your visual preference; use any color
+    "r_foot": "#28C02D",
+    "l_foot": "#D0420E",
+}
+CustomMarkerSize = 15
+CustomFontname = "Arial"
+CustomFontsize = 20  # Matched to the reference style
+plt.rcParams["font.family"] = CustomFontname
+plt.rcParams["font.size"] = CustomFontsize
 
 # Plot the trajectories for agent_id == 1 (adjust if needed)
 agent_id = 1
@@ -70,51 +89,122 @@ subset = df[(df["agent_id"] == agent_id) & (df["frame"] >= 2)]
 
 # Plot pelvis position
 ax1.plot(
-    subset["pelvis_x"], subset["pelvis_y"], label="Pelvis", color="blue", linewidth=1.5
+    subset["pelvis_x"],
+    subset["pelvis_y"],
+    color=palette["pelvis"],
+    linewidth=2.5,
+    label="Pelvis",
 )
 
-# Plot Xcom position
-ax1.plot(
+
+sc = ax1.plot(
     subset["Xcom_x"],
     subset["Xcom_y"],
-    label="Xcom",
-    color="red",
-    linewidth=1.5,
-    linestyle="--",
+    color=palette["Xcom"],
+    lw=0,
+    marker="x",
+    markersize=CustomMarkerSize,
 )
+
 
 # Plot heel positions
 ax1.plot(
     subset["heel_right_x"],
     subset["heel_right_y"],
-    label="Heel Right",
-    color="green",
-    linewidth=1.0,
+    color=palette["r_foot"],
+    linewidth=1.5,
     alpha=0.1,
     marker="o",
-    markersize=8,
+    markersize=CustomMarkerSize,
     linestyle="",
+    label="Heel Right",
 )
 ax1.plot(
     subset["heel_left_x"],
     subset["heel_left_y"],
-    label="Heel Left",
-    color="red",
-    linewidth=1.0,
+    color=palette["l_foot"],
+    linewidth=1.5,
     alpha=0.1,
     marker="o",
-    markersize=8,
+    markersize=CustomMarkerSize,
     linestyle="",
+    label="Heel Left",
 )
 
 # Set labels and title
-ax1.set_xlabel("X [m]")
-ax1.set_ylabel("Y [m]")
-# ax1.set_title(f"XY Trajectories of Pelvis, Xcom, and Heels (Agent {agent_id})")
-ax1.legend()
-ax1.grid(True, which="both", linestyle=":", linewidth=0.5, alpha=0.7)
-ax1.axis("equal")  # Ensure equal scaling for x and y
+ax1.set_xlabel(
+    "x [m]",
+    fontname=CustomFontname,
+    fontsize=CustomFontsize,
+    labelpad=CustomFontsize / 2,
+)
+# ax1.set_ylabel(
+#     "y [m]",
+#     fontname=CustomFontname,
+#     fontsize=CustomFontsize,
+#     labelpad=CustomFontsize / 2,
+# )
 
-# Adjust layout and display
+# Set equal aspect ratio, but allow the plot to adjust the limits
+ax1.set_aspect("equal", adjustable="datalim")
+# Axis limits and equal scaling
+ax1.set_xlim(1.8, 6.6)
+ax1.set_ylim(2.8, 3.95)
+
+
+# Tick formatting
+
+ax1.xaxis.set_major_locator(plt.MaxNLocator(nbins=6))
+ticks_loc = ax1.get_xticks()
+ax1.xaxis.set_major_locator(plt.FixedLocator(ticks_loc))
+ax1.set_xticklabels(
+    [str(round(x - 1.6, 2)) for x in ticks_loc], fontsize=CustomFontsize
+)
+
+
+ax1.yaxis.set_major_locator(plt.MaxNLocator(nbins=6))
+ticks_loc = ax1.get_yticks()
+ax1.yaxis.set_major_locator(plt.FixedLocator(ticks_loc))
+ax1.set_yticklabels([str(round(y, 2)) for y in ticks_loc], fontsize=CustomFontsize)
+
+
+# Grid
+# ax1.grid(
+#     visible=True,
+#     which="major",
+#     axis="x",
+#     linestyle=":",
+#     lw=0.8,
+#     color="k",
+#     alpha=0.4,
+# )
+
+# Legend
+from matplotlib.lines import Line2D
+
+custom_lines = [
+    Line2D([0], [0], color=palette["pelvis"], lw=3),
+    Line2D(
+        [0], [0], color=palette["Xcom"], lw=0, marker="x", markersize=CustomMarkerSize
+    ),
+    Line2D(
+        [0], [0], color=palette["r_foot"], lw=0, marker="o", markersize=CustomMarkerSize
+    ),
+    Line2D(
+        [0], [0], color=palette["l_foot"], lw=0, marker="o", markersize=CustomMarkerSize
+    ),
+]
+ax1.legend(
+    handles=custom_lines,
+    labels=["Pelvis", "$X_{CoM}$","Right foot", "Left foot", ],
+    fontsize=int(CustomFontsize),
+    bbox_to_anchor=(0.2, 0.4),
+    frameon=False,
+)
+
+# Adjust layout
 plt.tight_layout()
+# Save the figure as SVG
+plt.savefig("fig_Xcom_feet_trajectories_sim.svg", format="svg")
+
 plt.show()

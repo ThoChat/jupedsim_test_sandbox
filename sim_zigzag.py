@@ -103,7 +103,7 @@ agent_parameters = jps.HumanoidModelV0AgentParameters(
     journey_id=journey_id,  # Assign the agent to the zig-zag journey. [29]
     stage_id=1,  # Agent initially targets the first waypoint. [29]
     position=(1.0, 1.0),  # Initial position of the agent. [28]
-    desiredSpeed=5,
+    desiredSpeed=1.3,
     height=1.75,
 )
 

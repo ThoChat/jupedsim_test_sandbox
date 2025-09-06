@@ -33,8 +33,6 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
 
     # Anthropometric constants
     height = 1.75
-    pelvis_width = height * 0.3 / 1.7
-    feet_length = height * (0.1470 * 0.75)
     trunk_length = height * 0.3495
     shoulder_width = height * 0.45 / 1.7
     neck_length = height * 0.1396
@@ -44,7 +42,7 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
     # Figure + axes
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection="3d")
-    ax.view_init(elev=45, azim=45)
+    ax.view_init(elev=30, azim=60, roll=0)
 
     # Play/Pause button
     ax_play = plt.axes([0.8, 0.025, 0.1, 0.04])
@@ -57,15 +55,15 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
 
     # Set view params
     def set_plot_view_param():
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
+        # ax.set_xlabel("X")
+        # ax.set_ylabel("Y")
+        # ax.set_zlabel("Z")
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
         ax.set_zlim(0, 2)
         ax.set_aspect("equal", adjustable="box")
-        # ax.set_xticklabels([])
-        # ax.set_yticklabels([])
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
         ax.set_zticklabels([])
 
     # Plot function
@@ -211,7 +209,7 @@ def create_visualisator(simulation_file_name, saving_file_name=""):
                         x, y = interior.xy
                         ax.plot(x, y, color="black", alpha=0.6, linewidth=1, zorder=1)
 
-        ax.set_title(f"Frame {frame}")
+        # ax.set_title(f"Frame {frame}")
 
     # Slider update callback
     def slider_update(val):

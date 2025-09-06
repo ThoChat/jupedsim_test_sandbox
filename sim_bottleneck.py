@@ -6,25 +6,25 @@ from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon, GeometryCollection
 
 ## Setup geometries
-room1 = Polygon([(0, 0), (10, 0), (10, 10), (0, 10)])
-room2 = Polygon([(15, 0), (25, 0), (25, 10), (15, 10)])
-corridor = Polygon([(10, 4.5), (28, 4.5), (28, 5.5), (10, 5.5)])
+room1 = Polygon([(-10, -10), (10, -10), (10, 10), (-10, 10)])
+room2 = Polygon([(15, -5), (25, -5), (25, 5), (15, 5)])
+corridor = Polygon([(10, -2), (28, -1), (28, 1), (10, 2)])
 
 area = GeometryCollection(corridor.union(room1.union(room2)))
 walkable_area = pedpy.WalkableArea(area.geoms[0])
 # pedpy.plot_walkable_area(walkable_area=walkable_area).set_aspect("equal")
 
 ## Setup spawning area
-spawning_area = Polygon([(0.3, 0.3), (5, 0.3), (5, 9.7), (0.3, 9.7)])
-num_agents = 1
+spawning_area = Polygon([(-8, -8), (8, -8), (8, 8), (-8, 8)])
+num_agents = 55
 pos_in_spawning_area = jps.distributions.distribute_by_number(
     polygon=spawning_area,
     number_of_agents=num_agents,
-    distance_to_agents=0.3,
+    distance_to_agents=0.6,
     distance_to_polygon=0.15,
     seed=1,
 )
-exit_area = Polygon([(27, 4.5), (28, 4.5), (28, 5.5), (27, 5.5)])
+exit_area = Polygon([(27, -2), (28, -2), (28, 2), (27, 2)])
 
 
 ## Setup Simulation
@@ -42,8 +42,8 @@ journey = jps.JourneyDescription([exit_id])
 journey_id = simulation.add_journey(journey)
 
 ## Spawn agents
-v_distribution = normal(1.34, 0.5, num_agents)
-# v_distribution = normal(10, 0.5, num_agents)
+# v_distribution = normal(1.34, 0.5, num_agents)
+v_distribution = normal(1.5, 0.2, num_agents)
 
 for pos, v0 in zip(pos_in_spawning_area, v_distribution):
     agent_id = simulation.add_agent(

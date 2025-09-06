@@ -6,13 +6,13 @@ from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 
 ## Setup geometries
-area = Polygon([(0, 0), (12, 0), (12, 12), (10, 12), (10, 2), (0, 2)])
+area = Polygon([(0, 0), (15, 0), (15, 15), (10, 15), (10, 5), (0, 5)])
 walkable_area = pedpy.WalkableArea(area)
 # pedpy.plot_walkable_area(walkable_area=walkable_area).set_aspect("equal")
 
 
 ## Setup spawning area
-spawning_area = Polygon([(0, 0), (6, 0), (6, 2), (0, 2)])
+spawning_area = Polygon([(0, 0), (6, 0), (6, 5), (0, 5)])
 pos_in_spawning_area = jps.distribute_until_filled(
     polygon=spawning_area,
     distance_to_agents=5,
@@ -20,7 +20,7 @@ pos_in_spawning_area = jps.distribute_until_filled(
     seed=1,
 )
 num_agents = len(pos_in_spawning_area)
-exit_area = Polygon([(10, 11), (12, 11), (12, 12), (10, 12)])
+exit_area = Polygon([(10, 14), (15, 14), (15, 15), (10, 15)])
 
 
 ## Setup Simulation
@@ -38,7 +38,7 @@ journey = jps.JourneyDescription([exit_id])
 journey_id = simulation.add_journey(journey)
 
 ## Spawn agents
-v_distribution = normal(1.34, 0.5, num_agents)
+v_distribution = normal(1.5, 0.2, num_agents)
 # v_distribution = normal(5, 0.5, num_agents)
 
 for pos, v0 in zip(pos_in_spawning_area, v_distribution):

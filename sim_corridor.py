@@ -6,9 +6,9 @@ from numpy.random import normal  # normal distribution of free movement speed
 from shapely import Polygon
 
 ## Setup geometries
-# area = Polygon([(0, 0), (2, 0), (2, 10), (0, 10)])  # corridor along y-axis
+# area = Polygon([(0, 0), (2, 0), (2, 20), (0, 20)])  # corridor along y-axis
 
-area = Polygon([(0, 0), (10, 0), (10, 2), (0, 2)])  # corridor along x-axis
+area = Polygon([(0, 0), (20, 0), (20, 5), (0, 5)])  # corridor along x-axis
 
 walkable_area = pedpy.WalkableArea(area)
 # pedpy.plot_walkable_area(walkable_area=walkable_area).set_aspect("equal")
@@ -16,16 +16,20 @@ walkable_area = pedpy.WalkableArea(area)
 
 ## Setup spawning area
 # spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])  # for corridor along y-axis
-spawning_area = Polygon([(0, 0), (2, 0), (2, 2), (0, 2)])  # for corridor along x-axis
-pos_in_spawning_area = jps.distribute_until_filled(
+spawning_area = Polygon(
+    [(0.5, 0.5), (4.5, 0.5), (4.5, 4.5), (0, 4.5)]
+)  # for corridor along x-axis
+num_agents = 1
+pos_in_spawning_area = jps.distributions.distribute_by_number(
     polygon=spawning_area,
-    distance_to_agents=0.8,  # 0.8, # for three agents
-    distance_to_polygon=0.3,
+    number_of_agents=num_agents,
+    distance_to_agents=0.6,
+    distance_to_polygon=0.15,
     seed=1,
 )
 num_agents = len(pos_in_spawning_area)
-# exit_area = Polygon([(0, 9), (2, 9), (2, 10), (0, 10)])  # for corridor along y-axis
-exit_area = Polygon([(8, 0), (10, 0), (10, 2), (8, 2)])  # for corridor along x-axis
+# exit_area = Polygon([(0, 9), (2, 9), (2, 20), (0, 20)])  # for corridor along y-axis
+exit_area = Polygon([(18, 0), (20, 0), (20, 5), (18, 5)])  # for corridor along x-axis
 
 
 ## Setup Simulation
@@ -43,8 +47,8 @@ journey = jps.JourneyDescription([exit_id])
 journey_id = simulation.add_journey(journey)
 
 ## Spawn agents
-v_distribution = normal(1.34, 0.5, num_agents)
-# v_distribution = normal(10, 0.5, num_agents)
+v_distribution = normal(1.5, 0.2, num_agents)
+# v_distribution = normal(6, 0.05, num_agents)
 
 for pos, v0 in zip(pos_in_spawning_area, v_distribution):
     agent_id = simulation.add_agent(
